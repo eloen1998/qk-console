@@ -10,10 +10,10 @@ export function consoleFormatter(params: ConsoleVariable | string): string {
     let content = "";
     if (funcName) {
         content += `"${funcName}"`;
-        if (variables) {
+        if (variables && variables.length) {
             content += ", ";
             if (variables instanceof Array) {
-                content += variables.join(",");
+                content += variables.join(", ");
             } else {
                 content += variables;
             }

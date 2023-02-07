@@ -1,4 +1,4 @@
 export type ConsoleVariable = {
     funcName?: string;
-    variables: string[] | string;
+    variables?: string[] | string;
 };
