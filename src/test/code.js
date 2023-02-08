@@ -17,8 +17,7 @@ function i(j, k) {
 function l() {
 }
 
-const m = (n) => {
+const m = {
+    n() {
+    }
 };
-
-[1].map((item) => {
-});

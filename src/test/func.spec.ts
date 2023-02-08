@@ -58,6 +58,10 @@ describe("test traverse", async () => {
         const name = getVariable(code, 147);
         expect(name).toEqual({ funcName: "l", variables: [] });
     });
+    it("对象中的函数声明", () => {
+        const name = getVariable(code, 172);
+        expect(name).toEqual({ funcName: "n", variables: [] });
+    });
     // it("should simple8", () => {
     //   const name = getVariable(code, 26);
     //   expect(name).toEqual({ func: "m",variables: ["n"] });

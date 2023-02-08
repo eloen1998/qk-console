@@ -11,7 +11,7 @@ import {
 import { parse } from "../parse";
 import type { ConsoleVariable } from "../types";
 
-export function getVariable(code: string, offset: number): ConsoleVariable {
+export function getVariableJs(code: string, offset: number): ConsoleVariable {
     const consoleVariable: ConsoleVariable = {};
     const ast = parse(code);
 
