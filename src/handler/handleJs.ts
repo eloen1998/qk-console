@@ -19,6 +19,7 @@ export function getVariableJs(code: string, offset: number): ConsoleVariable {
         VariableDeclaration(path) {
             const node = path.node;
             if (isContain(node, offset)) {
+                delete consoleVariable.funcName;
                 consoleVariable.variables = node.declarations.reduce(
                     (pre,declaration) => {
                         if (declaration.id.type === 'Identifier') {
@@ -43,12 +44,14 @@ export function getVariableJs(code: string, offset: number): ConsoleVariable {
         AssignmentExpression(path) {
             const node = path.node;
             if (isContain(node, offset)) {
+                delete consoleVariable.funcName;
                 consoleVariable.variables = node.left.name;
             }
         },
         UpdateExpression(path) {
             const node = path.node;
             if (isContain(node, offset)) {
+                delete consoleVariable.funcName;
                 consoleVariable.variables = node.argument.name;
             }
         },
@@ -62,6 +65,7 @@ export function getVariableJs(code: string, offset: number): ConsoleVariable {
         ExpressionStatement(path) {
             const node = path.node;
             if (isContain(node, offset)) {
+                delete consoleVariable.funcName;
                 const expression = node.expression;
                 if (expression.type === "AssignmentExpression") {
                     consoleVariable.variables = expression.left.name;

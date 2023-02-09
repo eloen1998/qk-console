@@ -21,3 +21,7 @@ const m = {
     n() {
     }
 };
+
+function fun() {
+    const a = 6;
+}

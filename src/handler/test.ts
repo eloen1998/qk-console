@@ -11,7 +11,6 @@ function getVariable(code: string) {
         },
         ObjectMethod(path) {
             const node = path.node;
-            console.log('666:', node);
         }
     });
 }
@@ -19,6 +18,7 @@ function getVariable(code: string) {
 const code = `
 const m = {
     n(a) {
+        const c = 7;
     }
 };`;
 
