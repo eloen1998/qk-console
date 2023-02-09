@@ -9,18 +9,16 @@ function getVariable(code: string) {
         enter(path) {
             console.log('path:', path.node.type, path.node?.name);
         },
-        ObjectMethod(path) {
+        NumericLiteral(path) {
             const node = path.node;
+            console.log('node:', node)
         }
     });
 }
 
 const code = `
-const m = {
-    n(a) {
-        const c = 7;
-    }
-};`;
+const list = [];
+list[0] = 1`;
 
 
 
