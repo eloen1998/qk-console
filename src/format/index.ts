@@ -1,19 +1,19 @@
-import type { ConsoleVariable } from "../types";
+import type { ConsoleVariable } from '../types';
 
-// "myConsole.log('${1:" + text + "}', $1);$0",
+// 'myConsole.log('${1:' + text + '}', $1);$0',
 
 export function consoleFormatter(params: ConsoleVariable | string): string {
-    if (typeof params === "string") {
-        return `console.log("${params}", ${params})`;
+    if (typeof params === 'string') {
+        return `console.log('${params}', ${params});`;
     }
     const { funcName, variables } = params;
-    let content = "";
+    let content = '';
     if (funcName) {
-        content += `"${funcName}"`;
+        content += `'${funcName}'`;
         if (variables && variables.length) {
-            content += ", ";
+            content += ', ';
             if (variables instanceof Array) {
-                content += variables.join(", ");
+                content += variables.join(', ');
             } else {
                 content += variables;
             }
@@ -21,12 +21,12 @@ export function consoleFormatter(params: ConsoleVariable | string): string {
     } else if (variables) {
         if (variables instanceof Array) {
             content += variables
-                .map((variable) => `"${variable}", ${variable}`)
-                .join(", ");
+                .map((variable) => `'${variable}', ${variable}`)
+                .join(', ');
         } else {
-            content += `"${variables}", ${variables}`;
+            content += `'${variables}', ${variables}`;
         }
     }
 
-    return `console.log(${content})`;
+    return `console.log(${content});`;
 }
