@@ -1,15 +1,22 @@
+// 这里使用import语法会导致在使用traverse时出现问题：在执行测试用例时需要使用traverse.default，而在运行插件时需要使用traverse。
 // import traverse from "@babel/traverse";
 const traverse = require("@babel/traverse");
-import type { NodePath } from "@babel/traverse";
-import {
-    FunctionDeclaration,
-    Identifier,
-    BlockStatement,
-    VariableDeclaration,
-    Node,
-    ExpressionStatement,
-} from "@babel/types";
 import { parse } from "../parse";
+import {
+    LVal,
+    Expression,
+    ArrayPattern,
+    ObjectMethod,
+    ObjectPattern,
+    UpdateExpression,
+    MemberExpression,
+    AssignmentPattern,
+    FunctionDeclaration,
+    VariableDeclaration,
+    ExpressionStatement,
+    AssignmentExpression,
+} from "@babel/types";
+import type { NodePath } from "@babel/traverse";
 import type { ConsoleVariable } from "../types";
 
 export function getVariableJs(code: string, offset: number): ConsoleVariable {
@@ -17,84 +24,65 @@ export function getVariableJs(code: string, offset: number): ConsoleVariable {
     const ast = parse(code);
 
     traverse.default(ast, {
-        VariableDeclaration(path) {
+        VariableDeclaration(path: NodePath<VariableDeclaration>) {
             const node = path.node;
             if (isContain(node, offset)) {
                 delete consoleVariable.funcName;
                 consoleVariable.variables = node.declarations.reduce(
-                    (pre, declaration) => {
-                        if (declaration.id.type === "Identifier") {
-                            return pre.concat([declaration.id.name]);
-                        }
-                        if (declaration.id.type === "ObjectPattern") {
-                            const objectPatterns =
-                                declaration.id.properties.map((property) => {
-                                    return property.key.name;
-                                });
-                            return pre.concat(objectPatterns);
-                        }
-                        if (declaration.id.type === "ArrayPattern") {
-                            const arrayPatterns = declaration.id.elements.map(
-                                (identifier) => {
-                                    return identifier.name;
-                                }
-                            );
-                            return pre.concat(arrayPatterns);
-                        }
+                    (pre: string[], declaration): string[] => {
+                        return pre.concat(getLValVariables(declaration.id));
                     },
                     []
                 );
             }
         },
-        AssignmentExpression(path) {
+        AssignmentExpression(path: NodePath<AssignmentExpression>) {
             const node = path.node;
             if (isContain(node, offset)) {
                 delete consoleVariable.funcName;
-                consoleVariable.variables = node.left.name;
+                consoleVariable.variables = getLValVariables(node.left);
             }
         },
-        UpdateExpression(path) {
+        UpdateExpression(path: NodePath<UpdateExpression>) {
             const node = path.node;
             if (isContain(node, offset)) {
                 delete consoleVariable.funcName;
-                consoleVariable.variables = node.argument.name;
-            }
-        },
-        FunctionDeclaration(path) {
-            const node = path.node;
-            if (isContain(node, offset)) {
-                consoleVariable.funcName = node.id?.name;
-                consoleVariable.variables = node.params?.map(
-                    (identifier) => identifier.name
+                consoleVariable.variables = getExpressionVariables(
+                    node.argument
                 );
             }
         },
-        ExpressionStatement(path) {
+        FunctionDeclaration(path: NodePath<FunctionDeclaration>) {
+            const node = path.node;
+            if (isContain(node, offset)) {
+                consoleVariable.funcName = node.id?.name;
+                consoleVariable.variables = node.params.reduce(
+                    (pre: string[], param): string[] => {
+                        return pre.concat(getLValVariables(param));
+                    },
+                    []
+                );
+            }
+        },
+        ExpressionStatement(path: NodePath<ExpressionStatement>) {
             const node = path.node;
             if (isContain(node, offset)) {
                 delete consoleVariable.funcName;
                 const expression = node.expression;
-                if (expression.type === "AssignmentExpression") {
-                    if (expression.left.type === "Identifier") {
-                        consoleVariable.variables = expression.left.name;
-                    }
-                    if (expression.left.type === "MemberExpression") {
-                        consoleVariable.variables = getMemberExperssion(
-                            expression.left
-                        );
-                    }
-                }
-                if (expression.type === "UpdateExpression") {
-                    consoleVariable.variables = expression.argument.name;
-                }
+                consoleVariable.variables = getExpressionVariables(expression);
             }
         },
-        ObjectMethod(path) {
+        ObjectMethod(path: NodePath<ObjectMethod>) {
             const node = path.node;
             if (isContain(node, offset)) {
-                consoleVariable.funcName = node.key.name;
-                consoleVariable.variables = node.params.map(
-                    (param) => param.name
+                if (node.key.type === "Identifier") {
+                    consoleVariable.funcName = node.key.name;
+                }
+                consoleVariable.variables = node.params.reduce(
+                    (pre: string[], param): string[] => {
+                        return pre.concat(getLValVariables(param));
+                    },
+                    []
                 );
             }
         },
@@ -107,8 +95,100 @@ function isContain(node, index: number) {
     return index >= node.start && index <= node.end;
 }
 
+function getLValVariables(lVal: LVal): string[] {
+    switch (lVal.type) {
+        case "Identifier":
+            return [lVal.name];
+
+        case "RestElement":
+            return getLValVariables(lVal.argument);
+
+        case "AssignmentPattern":
+            return getAssignmentPatternVariables(lVal);
+
+        case "ArrayPattern":
+            return getArrayPatternVariables(lVal);
+
+        case "ObjectPattern":
+            return getObjectPatternVariables(lVal);
+
+        case "MemberExpression":
+            return [getMemberExperssionVariables(lVal)];
+
+        default:
+            return [];
+    }
+}
+
+function getAssignmentPatternVariables(
+    assignmentPattern: AssignmentPattern
+): string[] {
+    const left = assignmentPattern.left;
+    switch (left.type) {
+        case "Identifier":
+            return [left.name];
+        default:
+            return [];
+    }
+}
+
+function getArrayPatternVariables(arrayPattern: ArrayPattern): string[] {
+    const res: string[] = [];
+    arrayPattern.elements.forEach((element) => {
+        if (!element) {
+            return;
+        }
+        res.push(...getLValVariables(element));
+    });
+    return res;
+}
+
+function getObjectPatternVariables(objectPattern: ObjectPattern): string[] {
+    const res: string[] = [];
+    objectPattern.properties.forEach((property) => {
+        if (property.type === "RestElement") {
+            res.push(...getLValVariables(property));
+        }
+
+        if (property.type === "ObjectProperty") {
+            switch (property.value.type) {
+                case "Identifier":
+                case "RestElement":
+                case "AssignmentPattern":
+                case "ArrayPattern":
+                case "ObjectPattern":
+                    res.push(...getLValVariables(property.value));
+                    break;
+            }
+        }
+    });
+    return res;
+}
+
+function getExpressionVariables(expression: Expression): string[] {
+    switch (expression.type) {
+        case "Identifier":
+            return [expression.name];
+
+        case "AssignmentExpression":
+            return getLValVariables(expression.left);
+
+        case "UpdateExpression":
+            return getExpressionVariables(expression.argument);
+
+        case "MemberExpression":
+            return [getMemberExperssionVariables(expression)];
+
+        default:
+            return [];
+    }
+}
+
 // a.b[c]形式的语法识别
-function getMemberExperssion(memberExperssion, suf: string = "") {
+function getMemberExperssionVariables(
+    memberExperssion: MemberExpression,
+    suf: string = ""
+) {
     let newSuf = "";
     const { property, object } = memberExperssion;
     if (property.type === "Identifier") {
@@ -128,6 +208,6 @@ function getMemberExperssion(memberExperssion, suf: string = "") {
         return "this" + newSuf;
     }
     if (object.type === "MemberExpression") {
-        return getMemberExperssion(object, newSuf);
+        return getMemberExperssionVariables(object, newSuf);
     }
 }

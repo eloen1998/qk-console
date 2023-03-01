@@ -23,15 +23,14 @@ describe("test traverse", async () => {
     const code = await myRead();
     it("this变量识别", () => {
         const name = getVariableVue(code, 387);
-        expect(name).toEqual({ variables: "this.bb.ccc" });
+        expect(name).toEqual({ variables: ["this.bb.ccc"] });
     });
     it("对象取值识别", () => {
         const name = getVariableVue(code, 408);
-        expect(name).toEqual({ variables: "a.b" });
+        expect(name).toEqual({ variables: ["a.b"] });
     });
     it("数组取值识别", () => {
         const name = getVariableVue(code, 433);
-        expect(name).toEqual({ variables: "list[0]" });
+        expect(name).toEqual({ variables: ["list[0]"] });
     });
-
 });
