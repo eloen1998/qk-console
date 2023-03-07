@@ -14,27 +14,43 @@ export function activate(context: vscode.ExtensionContext) {
 
             let snippet: string;
 
-            const { selection } = editor;
-            const selectVariable = editor.document.getText(selection);
+            const { document, selection } = editor;
+            const curPos = selection.active;
+            const selectVariable = document.getText(selection);
+
+            const textLine = document.lineAt(curPos);
+            const emptyLine = textLine.isEmptyOrWhitespace;
 
             if (selectVariable) {
                 snippet = consoleFormatter(selectVariable);
             } else {
-                let curPos = editor.selection.active;
-                let offset = editor.document.offsetAt(curPos);
-
-                const languageType =
-                    vscode.window.activeTextEditor?.document.languageId;
-
+                let offset = document.offsetAt(curPos);
+                if (emptyLine) {
+                    const lineNumber = Math.max(textLine.lineNumber - 1, 0);
+                    const lastLine = document.lineAt(lineNumber);
+                    const position = new vscode.Position(
+                        lineNumber,
+                        lastLine.firstNonWhitespaceCharacterIndex +
+                            lastLine.text.trim().length
+                    );
+                    offset = document.offsetAt(position);
+                }
+                const languageType = document.languageId;
                 if (!languageType) {
                     return;
                 }
                 const consoleVariable = getVariable(
-                    editor.document.getText(),
+                    document.getText(),
                     offset,
                     languageType
                 );
                 snippet = consoleFormatter(consoleVariable);
+            }
+            const snippetString = new vscode.SnippetString(snippet);
+
+            if (emptyLine) {
+                editor.insertSnippet(snippetString);
+                return;
             }
 
             vscode.commands
@@ -43,7 +59,7 @@ export function activate(context: vscode.ExtensionContext) {
                     vscode.commands.executeCommand(
                         "editor.action.insertSnippet",
                         {
-                            snippet,
+                            snippetString,
                         }
                     );
                 });
