@@ -5,7 +5,7 @@
   "publisher": "eloen",
   "author": "eloen",
   "repository": "https://github.com/eloen1998/qk-console",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "icon": "static/icon.png",
   "engines": {
     "vscode": "^1.70.0"
@@ -52,7 +52,8 @@
     "pretest": "pnpm run compile && pnpm run lint",
     "lint": "eslint src --ext ts",
     "test:unit": "vitest --run",
-    "deploy": "vsce publish"
+    "deploy": "vsce publish",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
   "devDependencies": {
     "@types/babel__traverse": "^7.18.3",

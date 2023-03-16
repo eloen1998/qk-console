@@ -56,12 +56,7 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.commands
                 .executeCommand("editor.action.insertLineAfter")
                 .then(() => {
-                    vscode.commands.executeCommand(
-                        "editor.action.insertSnippet",
-                        {
-                            snippetString,
-                        }
-                    );
+                    editor.insertSnippet(snippetString);
                 });
         }
     );
