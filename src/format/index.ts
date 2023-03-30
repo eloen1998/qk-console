@@ -1,19 +1,19 @@
-import type { ConsoleVariable } from '../types';
+import { SnippetString } from "vscode";
 
-// 'myConsole.log('${1:' + text + '}', $1);$0',
-
-export function consoleFormatter(params: ConsoleVariable | string): string {
-    if (typeof params === 'string') {
-        return `console.log('${params}', ${params});`;
+export function consoleFormatter(
+    params: ConsoleVariable | string
+): SnippetString {
+    if (typeof params === "string") {
+        return new SnippetString(`console.log('${params}', ${params});`);
     }
     const { funcName, variables } = params;
-    let content = '';
+    let content = "";
     if (funcName) {
         content += `'${funcName}'`;
         if (variables && variables.length) {
-            content += ', ';
+            content += ", ";
             if (variables instanceof Array) {
-                content += variables.join(', ');
+                content += variables.join(", ");
             } else {
                 content += variables;
             }
@@ -22,11 +22,11 @@ export function consoleFormatter(params: ConsoleVariable | string): string {
         if (variables instanceof Array) {
             content += variables
                 .map((variable) => `'${variable}', ${variable}`)
-                .join(', ');
+                .join(", ");
         } else {
             content += `'${variables}', ${variables}`;
         }
     }
 
-    return `console.log(${content});`;
+    return new SnippetString(`console.log(${content});`);
 }

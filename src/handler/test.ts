@@ -1,3 +1,9 @@
+/**
+ * test
+ * 用于试验 traverse 的功能
+ * 开启watch模式情况下
+ * 可使用 node out/handler/test.js 运行
+ */
 const traverse = require("@babel/traverse");
 import { parse } from "../parse";
 
