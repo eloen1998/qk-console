@@ -1,6 +1,8 @@
 import { window, Range } from "vscode";
 import { getConsoleRange } from "../handler";
 
+const DELETE_CONSOLE_TYPE_LIST = ["log", "time"];
+
 export const deleteConsole = () => {
     const editor = window.activeTextEditor;
     if (!editor) {
@@ -15,12 +17,17 @@ export const deleteConsole = () => {
     }
     const rangeList = getConsoleRange(documentText, languageType);
 
+    const toDeleteRange = rangeList.filter((range) =>
+        DELETE_CONSOLE_TYPE_LIST.includes(range.name)
+    );
+
     editor.edit((textEditorEdit) => {
-        rangeList.forEach((consoleRange) => {
+        toDeleteRange.forEach((consoleRange) => {
             const [start, end] = consoleRange.range;
             textEditorEdit.delete(getVscodeRange(start, end));
         });
     });
+    showDeleteInfo(toDeleteRange);
 
     function getVscodeRange(startOffset: number, endOffset: number) {
         const consoleStartPosition = document.positionAt(startOffset);
@@ -47,3 +54,24 @@ export const deleteConsole = () => {
         return wholeRange;
     }
 };
+
+function showDeleteInfo(consoleList: ConsoleRange[]) {
+    const NumMap: { [key: string]: number } = {};
+    consoleList.forEach((console) => {
+        if (NumMap[console.name]) {
+            NumMap[console.name]++;
+        } else {
+            NumMap[console.name] = 1;
+        }
+    });
+
+    const entryList = Object.entries(NumMap)
+        .map((item) => {
+            const [logType, logNum] = item;
+            return `${logNum}条${logType}`;
+        })
+        .join(", ");
+    window.showInformationMessage(
+        `总计删除${consoleList.length}条console，包括${entryList}。`
+    );
+}
