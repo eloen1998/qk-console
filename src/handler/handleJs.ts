@@ -106,9 +106,6 @@ export function getConsoleRangeJs(code: string, offset: number = 0) {
                                     memberExpression.property.type ===
                                     "Identifier"
                                 ) {
-                                    // console.log(node?.loc?.start);
-                                    // console.log(node?.loc?.end);
-
                                     rangeList.push({
                                         name: memberExpression.property.name,
                                         range: [node.start + offset, node.end + offset],

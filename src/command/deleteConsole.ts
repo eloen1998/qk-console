@@ -1,7 +1,7 @@
 import { window, Range } from "vscode";
 import { getConsoleRange } from "../handler";
 
-const DELETE_CONSOLE_TYPE_LIST = ["log", "time"];
+const DELETE_CONSOLE_TYPE_LIST = ["log"];
 
 export const deleteConsole = () => {
     const editor = window.activeTextEditor;
