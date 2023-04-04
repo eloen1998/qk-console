@@ -1,5 +1,5 @@
 import { getVariableJs, getConsoleRangeJs } from "./handleJs";
-import { getVariableVue } from "./handleVue";
+import { getVariableVue, getConsoleRangeVue } from "./handleVue";
 
 export function getVariable(code: string, index: number, type: string) {
     if (type === "vue") {
@@ -10,9 +10,9 @@ export function getVariable(code: string, index: number, type: string) {
 }
 
 export function getConsoleRange(code: string, type: string) {
-    // if (type === "vue") {
-    //     return getVariableVue(code);
-    // } else {
-    return getConsoleRangeJs(code);
-    // }
+    if (type === "vue") {
+        return getConsoleRangeVue(code);
+    } else {
+        return getConsoleRangeJs(code);
+    }
 }

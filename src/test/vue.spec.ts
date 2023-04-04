@@ -1,26 +1,10 @@
-import { describe, it, expect, test } from "vitest";
+import { describe, it, expect } from "vitest";
 import { getVariableVue } from "../handler/handleVue";
-import fs from "fs";
+import readFile from "../utils/readFile";
+import path from "path";
 
-function myRead(): Promise<string> {
-    return new Promise((resolve, reject) => {
-        fs.readFile(
-            "/Users/admin/Project/PERSONAL/quickconsole/src/test/code.vue",
-            "utf-8",
-            (error, data) => {
-                if (error) {
-                    console.error(error);
-                    reject(error);
-                    return;
-                }
-                resolve(data);
-            }
-        );
-    });
-}
-
-describe("test traverse", async () => {
-    const code = await myRead();
+describe("get variable in vue", async () => {
+    const code = await readFile(path.join(__dirname, "./code.vue"));
     it("this变量识别", () => {
         const name = getVariableVue(code, 387);
         expect(name).toEqual({ variables: ["this.bb.ccc"] });

@@ -89,7 +89,7 @@ export function getVariableJs(code: string, offset: number): ConsoleVariable {
     return consoleVariable;
 }
 
-export function getConsoleRangeJs(code: string) {
+export function getConsoleRangeJs(code: string, offset: number = 0) {
     const ast = parse(code);
     const rangeList: ConsoleRange[] = [];
     traverse.default(ast, {
@@ -103,14 +103,15 @@ export function getConsoleRangeJs(code: string) {
                         if (memberExpression.object.type === "Identifier") {
                             if (memberExpression.object.name === "console") {
                                 if (
-                                    memberExpression.property.type === "Identifier"
+                                    memberExpression.property.type ===
+                                    "Identifier"
                                 ) {
                                     // console.log(node?.loc?.start);
                                     // console.log(node?.loc?.end);
-                                    
+
                                     rangeList.push({
                                         name: memberExpression.property.name,
-                                        range: [node.start, node.end],
+                                        range: [node.start + offset, node.end + offset],
                                     });
                                     return;
                                 }

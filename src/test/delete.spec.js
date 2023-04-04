@@ -1,6 +1,6 @@
 import { describe, it, expect, test } from "vitest";
 import { getConsoleRangeJs } from "../handler/handleJs";
-describe("test traverse", async () => {
+describe("get consoleRange", async () => {
     it("log声明语句", () => {
         const code = `
         console.log(111)

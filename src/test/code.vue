@@ -23,6 +23,7 @@ export default {
             this.bb.ccc = 5;
             a.b = 7;
             list[0] = 1;
+            console.log('111');
         }
     },
 };

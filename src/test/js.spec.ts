@@ -1,6 +1,6 @@
 import { describe, it, expect, test } from "vitest";
 import { getVariableJs } from "../handler/handleJs";
-describe("test traverse", async () => {
+describe("get variable", async () => {
     it("const变量声明语句", () => {
         const code = `const a = 1;`;
         const name = getVariableJs(code, 12);
