@@ -82,6 +82,13 @@ describe("get variable", async () => {
         const name = getVariableJs(code, 29);
         expect(name).toEqual({ funcName: "n", variables: [] });
     });
+    it("对象中的函数声明2", () => {
+        const code = `const watch = {
+            'form.name'() {}
+        };`;
+        const name = getVariableJs(code, 44);
+        expect(name).toEqual({ funcName: "form.name", variables: [] });
+    });
     it("函数中变量声明", () => {
         const code = `function fun() {
             const a = 6;

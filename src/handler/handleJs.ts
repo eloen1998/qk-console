@@ -76,6 +76,9 @@ export function getVariableJs(code: string, offset: number): ConsoleVariable {
                 if (node.key.type === "Identifier") {
                     consoleVariable.funcName = node.key.name;
                 }
+                if (node.key.type === "StringLiteral") {
+                    consoleVariable.funcName = node.key.value;
+                }
                 consoleVariable.variables = node.params.reduce(
                     (pre: string[], param): string[] => {
                         return pre.concat(getLValVariables(param));
