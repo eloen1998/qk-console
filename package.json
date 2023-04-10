@@ -50,7 +50,33 @@
                 "language": "typescript",
                 "path": "./snippets.json"
             }
-        ]
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "qkConsole",
+            "properties": {
+                "qkConsole.singleQuote": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "使用单引号而不是双引号"
+                },
+                "qkConsole.semi": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "结尾分号"
+                },
+                "qkConsole.delete.types": {
+                    "type": "array",
+                    "default": ["log"],
+                    "description": "需要删除的console类型"
+                },
+                "qkConsole.prefix": {
+                    "type": "string",
+                    "default": "",
+                    "description": "打印语句前缀"
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "pnpm run compile",

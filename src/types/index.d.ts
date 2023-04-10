@@ -3,7 +3,7 @@ export {}
 declare global {
     type ConsoleVariable = {
         funcName?: string;
-        variables?: string[] | string;
+        variables?: string[];
     };
     type ConsoleRange = {
         name: string;
