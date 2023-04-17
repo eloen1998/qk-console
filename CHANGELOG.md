@@ -1,3 +1,17 @@
+## [0.2.4](https://github.com/eloen1998/qk-console/compare/v0.2.0...v0.2.4) (2023-04-17)
+
+
+### Features
+
+* 降级兼容1.70 ([fbc7b0c](https://github.com/eloen1998/qk-console/commit/fbc7b0c7ed4c81854c4cd24d542eeb01771b955b))
+* 删除console支持vue文件 ([d2bf29c](https://github.com/eloen1998/qk-console/commit/d2bf29c1ffcd3496f8d2b294328252a82750d85d))
+* 增加对对象中字符串表达式函数名称的识别 ([c9ea85d](https://github.com/eloen1998/qk-console/commit/c9ea85d6595f7056c5fb69943acd8b085bce84c5))
+* 增加配置项 ([60bf6a6](https://github.com/eloen1998/qk-console/commit/60bf6a6f680147dc6c6537299605dff117e1a556))
+* 增加删除console范围，增加删除操作提示 ([b1e8612](https://github.com/eloen1998/qk-console/commit/b1e8612ba35aeb7a725f161e00666d09a8ff8aba))
+* 增加语法错误提示 ([1c4f8ab](https://github.com/eloen1998/qk-console/commit/1c4f8ab3df7ad5ead8d819375248e2c07f114b64))
+
+
+
 # [0.2.0](https://github.com/eloen1998/qk-console/compare/v0.1.0...v0.2.0) (2023-03-30)
 
 

@@ -8,10 +8,20 @@
 1. 直接插入打印语句模板
 2. 选中变量，按照模板插入打印语句
 3. **自动**识别当前行的*变量*，插入该变量的打印语句
+4. 一键删除console
+5. 插入格式配置
 
-##### 使用方式
+![使用示例](https://raw.githubusercontent.com/eloen1998/qk-console/main/static/screenshots.gif)
+
+
+
+##### 插入console使用方式
 1. 命令 qkConsole.insertConsole
 2. 快捷键 cmd+y（MAC，window可自行配置）
+
+##### 删除console使用方式
+1. 命令 qkConsole.deleteConsole
+2. 快捷键 cmd+u（MAC，window可自行配置）
 
 ##### 适用场景
 1. js/ts/vue文件中
@@ -24,4 +34,4 @@
  - [ ] 利用 skip，stop进行性能优化
  - [ ] 增加箭头函数识别
  - [ ] consoleFormatter利用vscode.SnippetString重写
- - [ ] console插入位置优化
+ - [x] console插入位置优化
