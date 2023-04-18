@@ -96,4 +96,11 @@ describe("get variable", async () => {
         const name = getVariableJs(code, 41);
         expect(name).toEqual({ variables: ["a"] });
     });
+    it("箭头函数", () => {
+        const code = `const a = (s) => {
+
+        }`;
+        const name = getVariableJs(code, 18);
+        expect(name).toEqual({ variables: ["s"] });
+    });
 });

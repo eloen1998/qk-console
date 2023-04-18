@@ -31,7 +31,7 @@
 
 
 ##### TDDO
- - [ ] 利用 skip，stop进行性能优化
- - [ ] 增加箭头函数识别
- - [ ] consoleFormatter利用vscode.SnippetString重写
+ - [x] 利用 skip，stop进行性能优化
+ - [x] 增加箭头函数识别
+ - [x] consoleFormatter利用vscode.SnippetString重写
  - [x] console插入位置优化

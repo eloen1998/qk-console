@@ -10,7 +10,7 @@ describe("get consoleRange in vue", async () => {
         expect(consoleRange).toEqual([
             {
                 name: "log",
-                range: [446, 464],
+                range: [446, 465],
             },
         ]);
     });

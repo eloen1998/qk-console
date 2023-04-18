@@ -9,6 +9,7 @@ import {
     VariableDeclaration,
     ExpressionStatement,
     AssignmentExpression,
+    ArrowFunctionExpression,
 } from "@babel/types";
 import {
     isContain,
@@ -32,6 +33,8 @@ export function getVariableJs(code: string, offset: number): ConsoleVariable {
                     },
                     []
                 );
+            } else {
+                path.skip();
             }
         },
         AssignmentExpression(path: NodePath<AssignmentExpression>) {
@@ -39,6 +42,8 @@ export function getVariableJs(code: string, offset: number): ConsoleVariable {
             if (isContain(node, offset)) {
                 delete consoleVariable.funcName;
                 consoleVariable.variables = getLValVariables(node.left);
+            } else {
+                path.skip();
             }
         },
         UpdateExpression(path: NodePath<UpdateExpression>) {
@@ -48,6 +53,8 @@ export function getVariableJs(code: string, offset: number): ConsoleVariable {
                 consoleVariable.variables = getExpressionVariables(
                     node.argument
                 );
+            } else {
+                path.skip();
             }
         },
         FunctionDeclaration(path: NodePath<FunctionDeclaration>) {
@@ -60,6 +67,8 @@ export function getVariableJs(code: string, offset: number): ConsoleVariable {
                     },
                     []
                 );
+            } else {
+                path.skip();
             }
         },
         ExpressionStatement(path: NodePath<ExpressionStatement>) {
@@ -68,6 +77,8 @@ export function getVariableJs(code: string, offset: number): ConsoleVariable {
                 delete consoleVariable.funcName;
                 const expression = node.expression;
                 consoleVariable.variables = getExpressionVariables(expression);
+            } else {
+                path.skip();
             }
         },
         ObjectMethod(path: NodePath<ObjectMethod>) {
@@ -85,6 +96,22 @@ export function getVariableJs(code: string, offset: number): ConsoleVariable {
                     },
                     []
                 );
+            } else {
+                path.skip();
+            }
+        },
+        ArrowFunctionExpression(path: NodePath<ArrowFunctionExpression>) {
+            const node = path.node;
+            if (isContain(node, offset)) {
+                delete consoleVariable.funcName;
+                consoleVariable.variables = node.params.reduce(
+                    (pre: string[], param): string[] => {
+                        return pre.concat(getLValVariables(param));
+                    },
+                    []
+                );
+            } else {
+                path.skip();
             }
         },
     });
@@ -98,28 +125,26 @@ export function getConsoleRangeJs(code: string, offset: number = 0) {
     traverse.default(ast, {
         ExpressionStatement(path: NodePath<ExpressionStatement>) {
             const node = path.node;
-            const { expression } = node;
-            if (node.start && node.end) {
-                if (expression.type === "CallExpression") {
-                    if (expression.callee.type === "MemberExpression") {
-                        const memberExpression = expression.callee;
-                        if (memberExpression.object.type === "Identifier") {
-                            if (memberExpression.object.name === "console") {
-                                if (
-                                    memberExpression.property.type ===
-                                    "Identifier"
-                                ) {
-                                    rangeList.push({
-                                        name: memberExpression.property.name,
-                                        range: [node.start + offset, node.end + offset],
-                                    });
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
+            const { start, end, expression } = node;
+            if (
+                start &&
+                end &&
+                expression.type === "CallExpression" &&
+                expression.callee.type === "MemberExpression"
+            ) {
+                const memberExpression = expression.callee;
+                if (
+                    memberExpression.object.type === "Identifier" &&
+                    memberExpression.object.name === "console" &&
+                    memberExpression.property.type === "Identifier"
+                ) {
+                    rangeList.push({
+                        name: memberExpression.property.name,
+                        range: [start + offset, end + offset],
+                    });
+                } 
             }
+            path.skip();
         },
     });
     return rangeList;

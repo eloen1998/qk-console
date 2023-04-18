@@ -8,20 +8,36 @@ import { parse } from "../parse";
 
 function getVariable(code: string) {
     const ast = parse(code);
+    let counter = 0;
 
     traverse.default(ast, {
         enter(path) {
-            console.log("path:", path.node.type, path.node?.name);
+            const { start, end } = path.node;
+            console.log("path:", start, end);
+            if (start < 13 && end > 13) {
+                console.log('go on');
+            } else {
+                path.skip();
+            }
         },
-        NumericLiteral(path) {
-            const node = path.node;
-            console.log("node:", node);
+        VariableDeclaration(path) {
+            counter++;
+            // path.skip();
+        },
+        VariableDeclarator(path) {
+            counter++;
+            // path.skip();
+        },
+        Identifier(path) {
+            counter++;
+            // path.skip();
         },
     });
+    console.log("counter:", counter);
 }
 
 const code = `
 const list = [];
-list[0] = 1`;
+const list2 = [];`;
 
 getVariable(code);
