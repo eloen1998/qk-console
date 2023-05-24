@@ -6,7 +6,7 @@
     "author": "eloen",
     "repository": "https://github.com/eloen1998/qk-console",
     "version": "0.2.5",
-    "icon": "static/icon.png",
+    "icon": "https://raw.githubusercontent.com/eloen1998/qk-console/main/static/icon.png",
     "engines": {
         "vscode": "^1.70.0"
     },
