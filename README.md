@@ -1,4 +1,4 @@
-# QK-Console
+# QK-Console [![GitHub stars](https://img.shields.io/github/stars/eloen1998/qk-console.svg?style=?style=flat-square&logo=appveyor&?style=social&logo=appveyor&label=Star)](https://github.com/eloen1998/qk-console) ![Installs](https://img.shields.io/visual-studio-marketplace/azure-devops/installs/total/eloen.qk-console?style=flat-square)
 
 #### 一款vscode插件，帮助你快速地console.log出想要的变量。
 
@@ -30,8 +30,11 @@
 
 
 
-##### TDDO
+##### TODO
  - [x] 利用 skip，stop进行性能优化
  - [x] 增加箭头函数识别
  - [x] consoleFormatter利用vscode.SnippetString重写
  - [x] console插入位置优化
+ - [] snippets优化
+ - [] 删除提示优化
+ - [] 增加import、require引入识别

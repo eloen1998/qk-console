@@ -144,7 +144,6 @@ export function getConsoleRangeJs(code: string, offset: number = 0) {
                     });
                 } 
             }
-            path.skip();
         },
     });
     return rangeList;

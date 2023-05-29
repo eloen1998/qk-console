@@ -18,9 +18,20 @@ export const deleteConsole = () => {
     }
     const rangeList = getConsoleRange(documentText, languageType);
 
+
+    if (!rangeList.length) {
+        window.showInformationMessage("没有找到console语句");
+        return;
+    }
+
     const toDeleteRange = rangeList.filter((range) =>
         DELETE_CONSOLE_TYPE_LIST.includes(range.name)
     );
+
+    if (!toDeleteRange.length) {
+        window.showInformationMessage("没有找到需要删除的console语句，可通过\"qkConsole.delete.types\"配置需要删除的console类型");
+        return;
+    }
 
     editor.edit((textEditorEdit) => {
         toDeleteRange.forEach((consoleRange) => {
@@ -28,6 +39,7 @@ export const deleteConsole = () => {
             textEditorEdit.delete(getVscodeRange(start, end));
         });
     });
+
     showDeleteInfo(toDeleteRange);
 
     function getVscodeRange(startOffset: number, endOffset: number) {
@@ -66,13 +78,13 @@ function showDeleteInfo(consoleList: ConsoleRange[]) {
         }
     });
 
-    const entryList = Object.entries(NumMap)
+    const detailInfo = Object.entries(NumMap)
         .map((item) => {
             const [logType, logNum] = item;
             return `${logNum}条${logType}`;
         })
         .join(", ");
     window.showInformationMessage(
-        `总计删除${consoleList.length}条console，包括${entryList}。`
+        `总计删除${consoleList.length}条console，包括${detailInfo}。`
     );
 }
