@@ -4,17 +4,20 @@
     "description": "A extension for quickly console.",
     "publisher": "eloen",
     "author": "eloen",
-    "repository": "https://github.com/eloen1998/qk-console",
-    "version": "0.2.5",
-    "icon": "https://raw.githubusercontent.com/eloen1998/qk-console/main/static/icon.png",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/eloen1998/qk-console"
+    },
+    "version": "0.3.0",
+    "icon": "static/icon.png",
     "engines": {
-        "vscode": "^1.70.0"
+        "vscode": ">=1.70.0"
     },
     "categories": [
         "Other",
         "Snippets"
     ],
-    "main": "./out/extension.js",
+    "main": "./dist/extension.js",
     "activationEvents": [],
     "contributes": {
         "commands": [
@@ -67,7 +70,9 @@
                 },
                 "qkConsole.delete.types": {
                     "type": "array",
-                    "default": ["log"],
+                    "default": [
+                        "log"
+                    ],
                     "description": "需要删除的console类型"
                 },
                 "qkConsole.prefix": {
@@ -79,14 +84,12 @@
         }
     },
     "scripts": {
-        "vscode:prepublish": "pnpm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "pretest": "pnpm run compile && pnpm run lint",
-        "lint": "eslint src --ext ts",
+        "vscode:prepublish": "yarn package",
+        "webpack": "webpack --mode development",
+        "webpack-dev": "webpack --mode development --watch",
+        "package": "webpack --mode production --devtool hidden-source-map",
         "test:unit": "vitest --run",
-        "deploy": "vsce publish",
-        "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
+        "test-compile": "tsc -p ./"
     },
     "devDependencies": {
         "@types/babel__traverse": "7.18.3",
@@ -100,8 +103,11 @@
         "eslint": "8.22.0",
         "glob": "8.0.3",
         "mocha": "10.1.0",
+        "ts-loader": "^9.4.3",
         "typescript": "4.9.3",
-        "vite": "4.0.4"
+        "vite": "4.0.4",
+        "webpack": "^5.84.1",
+        "webpack-cli": "^5.1.1"
     },
     "dependencies": {
         "@babel/parser": "7.20.7",
