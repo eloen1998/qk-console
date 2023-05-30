@@ -1,3 +1,22 @@
+# [0.3.0](https://github.com/eloen1998/qk-console/compare/v0.2.5...v0.3.0) (2023-05-30)
+
+
+### Bug Fixes
+
+* 识别不出深层console语句问题 ([3d89468](https://github.com/eloen1998/qk-console/commit/3d894682928fae9454af847207420f91eb6d7504))
+
+
+### Features
+
+* 优化test中读文件方式，图标引入修改 ([a1d56f9](https://github.com/eloen1998/qk-console/commit/a1d56f94370efc88273894fa42de95fbbf15b7a9))
+
+
+### Performance Improvements
+
+* 引入webpack进行打包，减小包体积 ([eeff214](https://github.com/eloen1998/qk-console/commit/eeff214573ecc1355af09dd96529c80477611bcf))
+
+
+
 ## [0.2.5](https://github.com/eloen1998/qk-console/compare/v0.2.0...v0.2.5) (2023-04-18)
 
 
