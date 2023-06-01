@@ -10,7 +10,7 @@ type setting_key =
 const DEFAULT_SETTING = {
     singleQuote: true,
     semi: true,
-    ["delete.types"]: ["log"],
+    ["delete.types"]: ["log", "time", "timeEnd"],
     prefix: "",
 };
 

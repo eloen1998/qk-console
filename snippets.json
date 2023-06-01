@@ -1,12 +1,17 @@
 {
-  "输出 log 日志": {
+  "console.log": {
     "prefix": ["clg", "log"],
     "body": ["console.log(${1});"],
     "description": "输出 log 日志"
   },
-  "输出带颜色的 log 日志": {
+  "console.log with color": {
     "prefix": "clog",
     "body": ["console.log('%c ${1}: ', 'color: #bf2c9f; background: pink; font-size: 13px;', ${1});"],
     "description": "输出带颜色的 log 日志"
+  },
+  "console.time & timeEnd": {
+    "prefix": "ctime",
+    "body": ["console.time('${1}');\nconsole.timeEnd('${1}');"],
+    "description": "输出 time 日志"
   }
 }
