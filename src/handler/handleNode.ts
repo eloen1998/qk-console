@@ -5,6 +5,9 @@ import {
     ObjectPattern,
     MemberExpression,
     AssignmentPattern,
+    Identifier,
+    Pattern,
+    RestElement
 } from "@babel/types";
 
 export function isContain(node, index: number) {
@@ -29,7 +32,7 @@ export function getLValVariables(lVal: LVal): string[] {
             return getObjectPatternVariables(lVal);
 
         case "MemberExpression":
-            return [getMemberExperssionVariables(lVal)];
+            return [getMemberExpressionVariables(lVal)];
 
         default:
             return [];
@@ -48,7 +51,7 @@ export function getExpressionVariables(expression: Expression): string[] {
             return getExpressionVariables(expression.argument);
 
         case "MemberExpression":
-            return [getMemberExperssionVariables(expression)];
+            return [getMemberExpressionVariables(expression)];
 
         default:
             return [];
@@ -78,9 +81,7 @@ function getArrayPatternVariables(arrayPattern: ArrayPattern): string[] {
     return res;
 }
 
-function getObjectPatternVariables(
-    objectPattern: ObjectPattern
-): string[] {
+function getObjectPatternVariables(objectPattern: ObjectPattern): string[] {
     const res: string[] = [];
     objectPattern.properties.forEach((property) => {
         if (property.type === "RestElement") {
@@ -102,15 +103,23 @@ function getObjectPatternVariables(
     return res;
 }
 
+export function getParamsVariables(
+    params: Array<Identifier | Pattern | RestElement>
+): string[] {
+    return params.reduce((pre: string[], param) => {
+        return pre.concat(getLValVariables(param));
+    }, []);
+}
+
 // a.b[c]形式的语法识别
-function getMemberExperssionVariables(
-    memberExperssion: MemberExpression,
+function getMemberExpressionVariables(
+    memberExpression: MemberExpression,
     suf: string = ""
-) {
+): string {
     let newSuf = "";
-    const { property, object } = memberExperssion;
+    const { property, object } = memberExpression;
     if (property.type === "Identifier") {
-        if (memberExperssion.computed) {
+        if (memberExpression.computed) {
             newSuf = "[" + property.name + "]" + suf;
         } else {
             newSuf = "." + property.name + suf;
@@ -126,6 +135,7 @@ function getMemberExperssionVariables(
         return "this" + newSuf;
     }
     if (object.type === "MemberExpression") {
-        return getMemberExperssionVariables(object, newSuf);
+        return getMemberExpressionVariables(object, newSuf);
     }
+    return "";
 }

@@ -72,7 +72,7 @@ describe("get variable", async () => {
         const name = getVariableJs(code, 32);
         expect(name).toEqual({
             funcName: "i",
-            variables: ["j", "k", "l", "m", "n"],
+            variables: ["j", "k", "l", "m", "n"]
         });
     });
     it("对象中的函数声明", () => {
@@ -102,5 +102,29 @@ describe("get variable", async () => {
         }`;
         const name = getVariableJs(code, 18);
         expect(name).toEqual({ variables: ["s"] });
+    });
+    it("if语句", () => {
+        const code = `function fun() {
+            if (a) {
+                const b = 1;
+            }
+        }`;
+        const name = getVariableJs(code, 37);
+        expect(name).toEqual({ variables: ["a"] });
+    });
+    it("import语句1", () => {
+        const code = `import * as d from './d'`;
+        const name = getVariableJs(code, 24);
+        expect(name).toEqual({ variables: ["d"] });
+    });
+    it("import语句2", () => {
+        const code = `import a from './a';`;
+        const name = getVariableJs(code, 20);
+        expect(name).toEqual({ variables: ["a"] });
+    });
+    it("import语句3", () => {
+        const code = `import {b as c, e, f} from './b'`;
+        const name = getVariableJs(code, 32);
+        expect(name).toEqual({ variables: ["c", "e", "f"] });
     });
 });

@@ -3,18 +3,21 @@
 const traverse = require("@babel/traverse");
 import { parse } from "../parse";
 import {
+    IfStatement,
     ObjectMethod,
     UpdateExpression,
+    ImportDeclaration,
     FunctionDeclaration,
     VariableDeclaration,
     ExpressionStatement,
     AssignmentExpression,
-    ArrowFunctionExpression,
+    ArrowFunctionExpression
 } from "@babel/types";
 import {
     isContain,
     getLValVariables,
-    getExpressionVariables,
+    getParamsVariables,
+    getExpressionVariables
 } from "./handleNode";
 import type { NodePath } from "@babel/traverse";
 
@@ -61,12 +64,7 @@ export function getVariableJs(code: string, offset: number): ConsoleVariable {
             const node = path.node;
             if (isContain(node, offset)) {
                 consoleVariable.funcName = node.id?.name;
-                consoleVariable.variables = node.params.reduce(
-                    (pre: string[], param): string[] => {
-                        return pre.concat(getLValVariables(param));
-                    },
-                    []
-                );
+                consoleVariable.variables = getParamsVariables(node.params);
             } else {
                 path.skip();
             }
@@ -90,12 +88,7 @@ export function getVariableJs(code: string, offset: number): ConsoleVariable {
                 if (node.key.type === "StringLiteral") {
                     consoleVariable.funcName = node.key.value;
                 }
-                consoleVariable.variables = node.params.reduce(
-                    (pre: string[], param): string[] => {
-                        return pre.concat(getLValVariables(param));
-                    },
-                    []
-                );
+                consoleVariable.variables = getParamsVariables(node.params);
             } else {
                 path.skip();
             }
@@ -104,16 +97,33 @@ export function getVariableJs(code: string, offset: number): ConsoleVariable {
             const node = path.node;
             if (isContain(node, offset)) {
                 delete consoleVariable.funcName;
-                consoleVariable.variables = node.params.reduce(
-                    (pre: string[], param): string[] => {
-                        return pre.concat(getLValVariables(param));
-                    },
-                    []
-                );
+                consoleVariable.variables = getParamsVariables(node.params);
             } else {
                 path.skip();
             }
         },
+        IfStatement(path: NodePath<IfStatement>) {
+            const node = path.node;
+            if (isContain(node, offset)) {
+                delete consoleVariable.funcName;
+                consoleVariable.variables = getExpressionVariables(node.test);
+            } else {
+                path.skip();
+            }
+        },
+        ImportDeclaration(path: NodePath<ImportDeclaration>) {
+            const node = path.node;
+            if (isContain(node, offset)) {
+                delete consoleVariable.funcName;
+                consoleVariable.variables = node.specifiers.map(
+                    (specifiers) => {
+                        return specifiers.local.name;
+                    }
+                ) as string[];
+            } else {
+                path.skip();
+            }
+        }
     });
 
     return consoleVariable;
@@ -140,11 +150,11 @@ export function getConsoleRangeJs(code: string, offset: number = 0) {
                 ) {
                     rangeList.push({
                         name: memberExpression.property.name,
-                        range: [start + offset, end + offset],
+                        range: [start + offset, end + offset]
                     });
-                } 
+                }
             }
-        },
+        }
     });
     return rangeList;
 }

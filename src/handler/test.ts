@@ -12,32 +12,21 @@ function getVariable(code: string) {
 
     traverse.default(ast, {
         enter(path) {
-            const { start, end } = path.node;
-            console.log("path:", start, end);
-            if (start < 13 && end > 13) {
-                console.log('go on');
-            } else {
-                path.skip();
-            }
+            const nodeType = path.node.type;
+            console.log('nodeType', nodeType);
         },
-        VariableDeclaration(path) {
-            counter++;
-            // path.skip();
-        },
-        VariableDeclarator(path) {
-            counter++;
-            // path.skip();
-        },
-        Identifier(path) {
-            counter++;
-            // path.skip();
-        },
+        IfStatement(path: any) {
+            const node = path.node;
+            console.log('node', node);
+        }
     });
     console.log("counter:", counter);
 }
 
-const code = `
-const list = [];
-const list2 = [];`;
+const code = `function fun() {
+    if (a) {
+        const b = 1;
+    }
+}`;
 
 getVariable(code);
