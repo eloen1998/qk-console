@@ -5,6 +5,9 @@ import { parse } from "../parse";
 import {
     IfStatement,
     ObjectMethod,
+    ForInStatement,
+    ForOfStatement,
+    SwitchStatement,
     UpdateExpression,
     ImportDeclaration,
     FunctionDeclaration,
@@ -17,7 +20,8 @@ import {
     isContain,
     getLValVariables,
     getParamsVariables,
-    getExpressionVariables
+    getExpressionVariables,
+    getVariableDeclarationVariables
 } from "./handleNode";
 import type { NodePath } from "@babel/traverse";
 
@@ -30,12 +34,14 @@ export function getVariableJs(code: string, offset: number): ConsoleVariable {
             const node = path.node;
             if (isContain(node, offset)) {
                 delete consoleVariable.funcName;
-                consoleVariable.variables = node.declarations.reduce(
-                    (pre: string[], declaration): string[] => {
-                        return pre.concat(getLValVariables(declaration.id));
-                    },
-                    []
-                );
+                consoleVariable.variables =
+                    getVariableDeclarationVariables(node);
+                // node.declarations.reduce(
+                // (pre: string[], declaration): string[] => {
+                //     return pre.concat(getLValVariables(declaration.id));
+                // },
+                // []
+                // );
             } else {
                 path.skip();
             }
@@ -120,6 +126,45 @@ export function getVariableJs(code: string, offset: number): ConsoleVariable {
                         return specifiers.local.name;
                     }
                 ) as string[];
+            } else {
+                path.skip();
+            }
+        },
+        ForInStatement(path: NodePath<ForInStatement>) {
+            const node = path.node;
+            if (isContain(node, offset)) {
+                consoleVariable.funcName = 'for in';
+                if (node.left.type === "VariableDeclaration") {
+                    consoleVariable.variables = getVariableDeclarationVariables(
+                        node.left
+                    );
+                } else {
+                    consoleVariable.variables = getLValVariables(node.left);
+                }
+            } else {
+                path.skip();
+            }
+        },
+        ForOfStatement(path: NodePath<ForOfStatement>) {
+            const node = path.node;
+            if (isContain(node, offset)) {
+                consoleVariable.funcName = 'for of';
+                if (node.left.type === "VariableDeclaration") {
+                    consoleVariable.variables = getVariableDeclarationVariables(
+                        node.left
+                    );
+                } else {
+                    consoleVariable.variables = getLValVariables(node.left);
+                }
+            } else {
+                path.skip();
+            }
+        },
+        SwitchStatement(path: NodePath<SwitchStatement>) {
+            const node = path.node;
+            if (isContain(node, offset)) {
+                consoleVariable.funcName = 'switch';
+                consoleVariable.variables = getExpressionVariables(node.discriminant);
             } else {
                 path.skip();
             }

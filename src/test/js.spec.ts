@@ -1,6 +1,6 @@
 import { describe, it, expect, test } from "vitest";
 import { getVariableJs } from "../handler/handleJs";
-describe("get variable", async () => {
+describe("声明语句变量识别", async () => {
     it("const变量声明语句", () => {
         const code = `const a = 1;`;
         const name = getVariableJs(code, 12);
@@ -102,29 +102,5 @@ describe("get variable", async () => {
         }`;
         const name = getVariableJs(code, 18);
         expect(name).toEqual({ variables: ["s"] });
-    });
-    it("if语句", () => {
-        const code = `function fun() {
-            if (a) {
-                const b = 1;
-            }
-        }`;
-        const name = getVariableJs(code, 37);
-        expect(name).toEqual({ variables: ["a"] });
-    });
-    it("import语句1", () => {
-        const code = `import * as d from './d'`;
-        const name = getVariableJs(code, 24);
-        expect(name).toEqual({ variables: ["d"] });
-    });
-    it("import语句2", () => {
-        const code = `import a from './a';`;
-        const name = getVariableJs(code, 20);
-        expect(name).toEqual({ variables: ["a"] });
-    });
-    it("import语句3", () => {
-        const code = `import {b as c, e, f} from './b'`;
-        const name = getVariableJs(code, 32);
-        expect(name).toEqual({ variables: ["c", "e", "f"] });
     });
 });

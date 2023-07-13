@@ -1,13 +1,14 @@
 import {
     LVal,
+    Pattern,
+    Identifier,
     Expression,
+    RestElement,
     ArrayPattern,
     ObjectPattern,
     MemberExpression,
     AssignmentPattern,
-    Identifier,
-    Pattern,
-    RestElement
+    VariableDeclaration
 } from "@babel/types";
 
 export function isContain(node, index: number) {
@@ -109,6 +110,17 @@ export function getParamsVariables(
     return params.reduce((pre: string[], param) => {
         return pre.concat(getLValVariables(param));
     }, []);
+}
+
+export function getVariableDeclarationVariables(
+    params: VariableDeclaration
+): string[] {
+    return params.declarations.reduce(
+        (pre: string[], declaration): string[] => {
+            return pre.concat(getLValVariables(declaration.id));
+        },
+        []
+    );
 }
 
 // a.b[c]形式的语法识别
