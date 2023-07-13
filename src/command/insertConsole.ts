@@ -18,7 +18,7 @@ export function insertConsole() {
     const emptyLine = textLine.isEmptyOrWhitespace;
 
     if (selectVariable) {
-        snippet = consoleFormatter(selectVariable);
+        snippet = consoleFormatter(selectVariable.trim());
     } else {
         let offset = document.offsetAt(curPos);
         if (emptyLine) {
