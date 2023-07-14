@@ -1,3 +1,19 @@
+## [0.3.2](https://github.com/eloen1998/qk-console/compare/v0.3.0...v0.3.2) (2023-07-14)
+
+
+### Bug Fixes
+
+* 在选中变量生成打印语句时进行trim ([3325947](https://github.com/eloen1998/qk-console/commit/3325947ba5e3cd01f147296d5258bd318a5c8578))
+
+
+### Features
+
+* 增加for in, for of, switch case的识别 ([22f99d9](https://github.com/eloen1998/qk-console/commit/22f99d967593fb38bc2c6d0c4de64bfc7e84c066))
+* 增加if、import变量识别 ([7de094e](https://github.com/eloen1998/qk-console/commit/7de094ee37455b647eee31d165fde478ed95d589))
+* 增加time代码片段 ([58233d4](https://github.com/eloen1998/qk-console/commit/58233d4200cd9e3d396b8f58690cb9166c73fd16))
+
+
+
 # [0.3.0](https://github.com/eloen1998/qk-console/compare/v0.2.5...v0.3.0) (2023-05-30)
 
 
